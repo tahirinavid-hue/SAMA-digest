@@ -4,6 +4,7 @@ Uses Claude claude-sonnet-4-6 with web_search tool (server-side, agentic loop).
 Runs on Mondays only.
 """
 import os
+import time
 import anthropic
 
 MODEL = "claude-sonnet-4-6"
@@ -34,12 +35,21 @@ def generate() -> str:
     all_text = []
 
     while True:
-        response = client.messages.create(
-            model=MODEL,
-            max_tokens=8096,
-            tools=TOOLS,
-            messages=messages,
-        )
+        for attempt in range(5):
+            try:
+                response = client.messages.create(
+                    model=MODEL,
+                    max_tokens=8096,
+                    tools=TOOLS,
+                    messages=messages,
+                )
+                break
+            except anthropic.RateLimitError:
+                wait = 30 * (attempt + 1)
+                print(f"[community_digest] Rate limited, retrying in {wait}s")
+                time.sleep(wait)
+        else:
+            raise RuntimeError("Rate limit retries exhausted")
 
         # Collect all text blocks from this response
         for block in response.content:
