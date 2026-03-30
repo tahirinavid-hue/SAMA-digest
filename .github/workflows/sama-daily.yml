@@ -2,15 +2,13 @@ name: SAMA Daily Digest
 
 on:
   schedule:
-    # 11:00 PM UTC = 7:00 PM ET
     - cron: "0 23 * * *"
-  workflow_dispatch:  # Allow manual trigger for testing
+  workflow_dispatch:
 
 jobs:
   daily:
     runs-on: ubuntu-22.04
     timeout-minutes: 15
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
