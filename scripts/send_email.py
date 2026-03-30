@@ -6,7 +6,13 @@ import requests
 
 RESEND_API_KEY = os.environ["RESEND_API_KEY"]
 SENDER = "onboarding@resend.dev"
-RECIPIENT = "tahirinavid@gmail.com"
+RECIPIENTS = [
+    "sshafie30@gmail.com",
+    "aprilarman33@gmail.com",
+    "najeebmian@hotmail.com",
+    "semirakhawar@gmail.com",
+    "tahirinavid@gmail.com",
+]
 
 RESEND_URL = "https://api.resend.com/emails"
 
@@ -20,7 +26,7 @@ def send(subject: str, html: str) -> None:
         },
         json={
             "from": SENDER,
-            "to": [RECIPIENT],
+            "to": RECIPIENTS,
             "subject": subject,
             "html": html,
         },
