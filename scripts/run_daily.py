@@ -6,6 +6,7 @@ Sends a combined HTML email via Resend.
 import os
 import sys
 from datetime import datetime, timezone
+import markdown as md
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -24,7 +25,7 @@ def build_html(story: str, digest: str | None) -> str:
                      padding-bottom:8px;margin-bottom:16px;">
             Community Digest
           </h2>
-          <div style="font-family:sans-serif;font-size:14px;color:#2d3748;white-space:pre-wrap;line-height:1.7;">
+          <div style="font-family:sans-serif;font-size:14px;color:#2d3748;line-height:1.7;line-height:1.7;">
             {digest}
           </div>
         </div>
@@ -36,7 +37,7 @@ def build_html(story: str, digest: str | None) -> str:
                      padding-bottom:8px;margin-bottom:16px;">
             Instagram Story Draft
           </h2>
-          <div style="font-family:sans-serif;font-size:14px;color:#2d3748;white-space:pre-wrap;line-height:1.7;">
+          <div style="font-family:sans-serif;font-size:14px;color:#2d3748;line-height:1.7;line-height:1.7;">
             {story}
           </div>
         </div>
@@ -75,8 +76,8 @@ def main():
 
     print(f"[run_daily] {date_str} | Monday={is_monday}")
 
-    story = story_draft.generate()
-    digest = community_digest.generate() if is_monday else None
+    story = md.markdown(story_draft.generate(), extensions=["extra"])
+    digest = md.markdown(community_digest.generate(), extensions=["extra"]) if is_monday else None
 
     html = build_html(story, digest)
     send_email.send(subject, html)
