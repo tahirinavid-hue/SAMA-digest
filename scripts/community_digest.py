@@ -31,38 +31,34 @@ def generate() -> str:
     messages = [{"role": "user", "content": PROMPT}]
     continuations = 0
 
+    all_text = []
+
     while True:
         response = client.messages.create(
             model=MODEL,
-            max_tokens=4096,
+            max_tokens=8096,
             tools=TOOLS,
             messages=messages,
         )
 
+        # Collect all text blocks from this response
+        for block in response.content:
+            if hasattr(block, "text") and block.text.strip():
+                all_text.append(block.text.strip())
+
         if response.stop_reason == "end_turn":
-            for block in response.content:
-                if hasattr(block, "text"):
-                    return block.text
-            return ""
+            return "\n\n".join(all_text)
 
         if response.stop_reason == "pause_turn":
-            # Server-side tool loop hit its iteration limit — re-send to continue
             if continuations >= MAX_CONTINUATIONS:
-                # Extract whatever text we have so far
-                for block in response.content:
-                    if hasattr(block, "text"):
-                        return block.text
-                return ""
+                return "\n\n".join(all_text)
             continuations += 1
-            messages = [
-                {"role": "user", "content": PROMPT},
+            # Append assistant response and ask to continue
+            messages = messages + [
                 {"role": "assistant", "content": response.content},
+                {"role": "user", "content": "Please continue."},
             ]
             print(f"[community_digest] Continuing (iteration {continuations})")
             continue
 
-        # Unexpected stop reason — return whatever text we have
-        for block in response.content:
-            if hasattr(block, "text"):
-                return block.text
-        return ""
+        return "\n\n".join(all_text)
