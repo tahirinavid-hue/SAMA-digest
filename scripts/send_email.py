@@ -7,10 +7,6 @@ import requests
 RESEND_API_KEY = os.environ["RESEND_API_KEY"]
 SENDER = "onboarding@resend.dev"
 RECIPIENTS = [
-    "sshafie30@gmail.com",
-    "aprilarman33@gmail.com",
-    "najeebmian@hotmail.com",
-    "semirakhawar@gmail.com",
     "tahirinavid@gmail.com",
 ]
 

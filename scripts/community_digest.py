@@ -13,7 +13,7 @@ TOOLS = [
     {
         "type": "web_search_20250305",
         "name": "web_search",
-        "max_uses": 15,
+        "max_uses": 8,
     }
 ]
 
@@ -23,7 +23,7 @@ For each relevant event include: event name, date, description, why it matters t
 
 Focus on events relevant to a Muslim community organization: interfaith events, community gatherings, volunteer opportunities, family events, local civic meetings."""
 
-MAX_CONTINUATIONS = 5
+MAX_CONTINUATIONS = 2
 
 
 def generate() -> str:
