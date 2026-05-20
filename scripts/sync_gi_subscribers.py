@@ -136,7 +136,7 @@ def load_file_set(path: Path) -> set[str]:
         return set()
     return {
         line.strip().lower()
-        for line in path.read_text().splitlines()
+        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines()
         if line.strip() and not line.startswith("#")
     }
 
