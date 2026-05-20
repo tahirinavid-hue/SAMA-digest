@@ -68,6 +68,23 @@ def build_html(digest: str, date_str: str) -> str:
     """
 
 
+DIGEST_HEADER = "# 🏝️"
+
+
+def clean_digest(raw: str) -> str:
+    """Strip any AI preamble before the digest header. Raises if header is missing."""
+    lines = raw.splitlines()
+    for i, line in enumerate(lines):
+        if line.strip().startswith(DIGEST_HEADER):
+            cleaned = "\n".join(lines[i:]).strip()
+            print(f"[run_gi_digest] Digest starts at line {i + 1} — preamble stripped.")
+            return cleaned
+    raise ValueError(
+        "Digest header '# 🏝️' not found in generated output. "
+        "Refusing to send — output may be malformed."
+    )
+
+
 def load_subscribers() -> list[str]:
     subs_path = ROOT / "gi_subscribers.txt"
     if not subs_path.exists():
@@ -96,6 +113,8 @@ def main():
     print(f"[run_gi_digest] Monday {date_str} — running digest for {len(subscribers)} subscribers")
 
     digest_md = gi_community_digest.generate()
+    digest_md = clean_digest(digest_md)
+
     digest_html = md.markdown(digest_md, extensions=["extra"])
 
     html = build_html(digest_html, date_str)
