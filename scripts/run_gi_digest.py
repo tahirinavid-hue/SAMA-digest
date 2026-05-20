@@ -17,6 +17,7 @@ from scripts.send_gi_email import send
 
 BLUE = "#1a3a5c"
 LIGHT = "#e8f0f7"
+ADMIN_EMAIL = "tahirinavid@gmail.com"
 
 ROOT = Path(__file__).parent.parent
 LAST_DIGEST_FILE = ROOT / "gi_last_digest.html"
@@ -136,15 +137,20 @@ def main():
     now = datetime.now(timezone.utc)
     is_saturday = now.weekday() == 5
     force_send = os.environ.get("FORCE_SEND", "").lower() == "true"
+    test_mode = os.environ.get("TEST_MODE", "").lower() == "true"
 
     if not is_saturday and not force_send:
         print("[run_gi_digest] Not Saturday — nothing to send.")
         return
 
-    subscribers = load_subscribers()
-    if not subscribers:
-        print("[run_gi_digest] No subscribers — nothing to send.")
-        return
+    if test_mode:
+        subscribers = [ADMIN_EMAIL]
+        print(f"[run_gi_digest] TEST MODE — sending only to {ADMIN_EMAIL}")
+    else:
+        subscribers = load_subscribers()
+        if not subscribers:
+            print("[run_gi_digest] No subscribers — nothing to send.")
+            return
 
     date_str = now.strftime("%B %-d, %Y")
     subject = f"Grand Island Community Digest — {date_str}"
