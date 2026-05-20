@@ -12,7 +12,7 @@ TOOLS = [
     {
         "type": "web_search_20250305",
         "name": "web_search",
-        "max_uses": 8,
+        "max_uses": 12,
     }
 ]
 
@@ -21,9 +21,14 @@ def _build_prompt() -> str:
     today = datetime.now(_tz.utc).strftime("%B %d, %Y")
     return f"""Today's date is {today}. Search for upcoming events on Grand Island, NY in the next 2 weeks using: grandislandny.gov, isledegrande.com, wnypapers.com, gicf.org, gineighbors.org, gichamber.org, volunteerwny.org, stepoutbuffalo.com
 
-Make sure to actively look for:
-- Family-friendly events and kids activities (sports leagues, story times, school events, youth programs, parks & rec, summer camps, playgrounds, arts & crafts for kids)
-- Search specifically for "Grand Island kids", "Grand Island children", "Grand Island family", "Grand Island youth", "Grand Island parks and recreation"
+Search priority — run these searches in this order:
+1. General upcoming events on Grand Island NY
+2. "Grand Island NY kids" OR "Grand Island NY children" OR "Grand Island NY family events"
+3. "Grand Island NY parks and recreation" OR "Grand Island NY youth sports"
+4. Grand Island Memorial Library upcoming programs
+5. Grand Island school events or PTA events
+
+Make sure at least 2-3 family/kids events appear in the final digest if any exist.
 
 Output rules — strictly follow every one:
 - Begin your response with NOTHING except the header line below. No preamble, no "here is", no "let me", no thinking out loud.
