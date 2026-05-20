@@ -4,6 +4,7 @@ Runs every Monday. Sends HTML email via Resend to all GI subscribers.
 Saves the latest digest HTML to gi_last_digest.html for new-subscriber delivery.
 """
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -98,6 +99,31 @@ def clean_digest(raw: str) -> str:
     return "\n".join(kept).strip()
 
 
+def validate_event_numbers(digest_md: str) -> None:
+    """Check that summary event numbers match detail event numbers."""
+    # Summary lines: "1. **Event Name** · Date"
+    summary_nums = re.findall(r'^(\d+)\.\s+\*\*', digest_md, re.MULTILINE)
+    # Detail lines: "**1. [emoji] Event Name**" or "**1. Event Name**"
+    detail_nums = re.findall(r'^\*\*(\d+)\.\s+', digest_md, re.MULTILINE)
+
+    if not summary_nums:
+        raise ValueError("Validation failed: no numbered events found in summary section.")
+    if not detail_nums:
+        raise ValueError("Validation failed: no numbered events found in detail section.")
+    if len(summary_nums) != len(detail_nums):
+        raise ValueError(
+            f"Validation failed: summary has {len(summary_nums)} events "
+            f"but detail section has {len(detail_nums)}. Numbers must match."
+        )
+    for i, (s, d) in enumerate(zip(summary_nums, detail_nums), 1):
+        if s != d:
+            raise ValueError(
+                f"Validation failed: summary item {i} is numbered {s} "
+                f"but corresponding detail event is numbered {d}."
+            )
+    print(f"[run_gi_digest] Validation passed — {len(summary_nums)} events, numbers aligned.")
+
+
 def load_subscribers() -> list[str]:
     subs_path = ROOT / "gi_subscribers.txt"
     if not subs_path.exists():
@@ -127,6 +153,7 @@ def main():
 
     digest_md = gi_community_digest.generate()
     digest_md = clean_digest(digest_md)
+    validate_event_numbers(digest_md)
 
     digest_html = md.markdown(digest_md, extensions=["extra"])
 
