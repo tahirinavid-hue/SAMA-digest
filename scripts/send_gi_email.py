@@ -5,7 +5,7 @@ import os
 import requests
 
 RESEND_API_KEY = os.environ["RESEND_API_KEY"]
-SENDER = "onboarding@resend.dev"
+SENDER = "hello@grandislanddigest.com"
 RESEND_URL = "https://api.resend.com/emails"
 
 
