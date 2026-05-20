@@ -72,17 +72,30 @@ DIGEST_HEADER = "# 🏝️"
 
 
 def clean_digest(raw: str) -> str:
-    """Strip any AI preamble before the digest header. Raises if header is missing."""
+    """Strip AI preamble before the digest header and remove any date range line after it."""
     lines = raw.splitlines()
+    start = None
     for i, line in enumerate(lines):
         if line.strip().startswith(DIGEST_HEADER):
-            cleaned = "\n".join(lines[i:]).strip()
-            print(f"[run_gi_digest] Digest starts at line {i + 1} — preamble stripped.")
-            return cleaned
-    raise ValueError(
-        "Digest header '# 🏝️' not found in generated output. "
-        "Refusing to send — output may be malformed."
-    )
+            start = i
+            break
+    if start is None:
+        raise ValueError(
+            "Digest header '# 🏝️' not found in generated output. "
+            "Refusing to send — output may be malformed."
+        )
+    print(f"[run_gi_digest] Digest starts at line {start + 1} — preamble stripped.")
+    kept = [lines[start]]  # the # 🏝️ header line
+    # Skip any immediately following date-range line (e.g. "May 24 – June 7, 2026")
+    rest = lines[start + 1:]
+    for j, line in enumerate(rest):
+        stripped = line.strip()
+        # A date-range line matches "Month DD" at the start — skip it
+        import re
+        if re.match(r'^[A-Z][a-z]+ \d', stripped) and ('–' in stripped or '-' in stripped or ',' in stripped):
+            continue
+        kept.append(line)
+    return "\n".join(kept).strip()
 
 
 def load_subscribers() -> list[str]:
