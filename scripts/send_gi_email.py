@@ -25,4 +25,4 @@ def send(subject: str, html: str, recipients: list[str]) -> None:
         timeout=15,
     )
     resp.raise_for_status()
-    print(f"[gi_email] Sent to {len(recipients)} recipients: {subject}")
+    print(f"[gi_email] Sent to {len(recipients)} recipients: {subject.encode('ascii', errors='replace').decode()}")
