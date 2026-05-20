@@ -2,4 +2,5 @@
 # Managed automatically by sync_gi_subscribers.py
 # To manually add/remove, edit this file directly.
 
+faisal_tahiri@hotmail.com
 tahirinavid@gmail.com
