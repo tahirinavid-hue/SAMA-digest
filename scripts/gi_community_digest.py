@@ -16,20 +16,18 @@ TOOLS = [
     }
 ]
 
-PROMPT = """You are a community events digest assistant for Grand Island, NY. Search for upcoming events in the next 2 weeks using these sources: grandislandny.gov, isledegrande.com, wnypapers.com, gicf.org, gineighbors.org, gichamber.org, volunteerwny.org, stepoutbuffalo.com
+PROMPT = """Search for upcoming events on Grand Island, NY in the next 2 weeks using: grandislandny.gov, isledegrande.com, wnypapers.com, gicf.org, gineighbors.org, gichamber.org, volunteerwny.org, stepoutbuffalo.com
 
-Rules:
-- Do NOT mention the sources or list them anywhere in your output
-- Do NOT include any disclaimer, warning, or note about which sites were checked or unavailable
-- Do NOT copy descriptions verbatim — always reword or summarize in your own words
-- Only include events with confirmed dates
-- Include events open to all residents: town meetings, festivals, fundraisers, volunteer opportunities, family events, sports, arts, library programs, school events, civic gatherings
-
-Format:
-- Start with exactly this header (fill in the actual date range): 🏝️ Grand Island, NY — Community Events Digest\n[date range, e.g. May 20 – June 2, 2026]
+Output rules — strictly follow every one:
+- Begin your response with NOTHING except the header line below. No preamble, no "here is", no "let me", no thinking out loud.
+- First line must be exactly: # 🏝️ Grand Island, NY — Community Events Digest
+- Second line must be exactly the date range, e.g.: May 20 – June 2, 2026
 - Then list events grouped by week as clean markdown
-- For each event include: event name, date, time if known, location, and a 1-2 sentence description in your own words
-- No source citations, no footnotes, no closing remarks about where to find more info"""
+- Only include events with confirmed upcoming dates — no past events
+- For each event: event name as a bold heading, then date/time/location, then a 1-2 sentence plain description in neutral human language
+- Write like a local newsletter editor, not an AI — no em-dashes (—), no phrases like "join us", "don't miss", "be sure to", no bullet points starting with verbs like "Enjoy" or "Discover"
+- Do NOT mention sources, disclaimers, footnotes, warnings about unavailable sites, or closing remarks
+- Do NOT copy any description verbatim — always reword in plain conversational English"""
 
 MAX_CONTINUATIONS = 2
 
