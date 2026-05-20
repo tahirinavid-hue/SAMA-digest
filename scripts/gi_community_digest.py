@@ -33,9 +33,10 @@ Make sure at least 2-3 family/kids events appear in the final digest if any exis
 
 Output rules — strictly follow every one:
 - Begin your response with NOTHING except the header line below. No preamble, no "here is", no "let me", no thinking out loud.
-- First line must be exactly: # 🏝️ Grand Island, NY Community Events Digest
-- Second line must be blank
-- Third line must be exactly: ### Upcoming Events
+- First line must be exactly: # Grand Island, NY
+- Second line must be a family-friendly joke of the day in italics, format: *Why did the... [punchline].* Keep it clean, light, and genuinely funny.
+- Third line must be blank
+- Fourth line must be exactly: ### Upcoming Events
 - Fourth section is a summary — one line per event, NO bullet points, NO indentation, NO dashes, format: `N. **Event Name** · Date` (e.g. `1. **Memorial Day Ceremony** · Mon, May 25`). List in strict chronological order by date. No emoji, no extra detail. Include every event that appears below, numbered sequentially starting at 1. The numbers here must match the numbers used on each event in the weekly detail section below.
 - After the summary, add a horizontal rule: ---
 - Then list events grouped by week. Each week heading must start with 📅, e.g.: ## 📅 Week 1: May 24 – May 30

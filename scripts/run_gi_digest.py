@@ -51,7 +51,8 @@ def build_html(digest: str, date_str: str) -> str:
         <div style="background:#ffffff;border-radius:0 0 10px 10px;padding:32px;
                     border:1px solid #dde3ed;border-top:none;">
         <style>
-          h1 {{ display:none; }}
+          h1 {{ font-family:sans-serif; font-size:20px; font-weight:700; color:{BLUE}; margin:0 0 4px; }}
+          em {{ font-family:sans-serif; font-size:13px; color:#718096; font-style:italic; display:block; margin-bottom:20px; }}
           h2 {{ font-family:sans-serif; font-size:13px; font-weight:700; color:{ACCENT};
                 text-transform:uppercase; letter-spacing:0.1em; margin:28px 0 12px;
                 padding-bottom:6px; border-bottom:2px solid {LIGHT}; }}
@@ -95,7 +96,7 @@ def build_html(digest: str, date_str: str) -> str:
     """
 
 
-DIGEST_HEADER = "# 🏝️ Grand Island, NY Community Events Digest"
+DIGEST_HEADER = "# Grand Island, NY"
 
 
 def clean_digest(raw: str) -> str:
