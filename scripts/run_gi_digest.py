@@ -68,7 +68,7 @@ def build_html(digest: str, date_str: str) -> str:
     """
 
 
-DIGEST_HEADER = "# 🏝️"
+DIGEST_HEADER = "# 🏝️ Grand Island, NY Community Events Digest"
 
 
 def clean_digest(raw: str) -> str:

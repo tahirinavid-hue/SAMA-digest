@@ -23,9 +23,10 @@ def _build_prompt() -> str:
 
 Output rules — strictly follow every one:
 - Begin your response with NOTHING except the header line below. No preamble, no "here is", no "let me", no thinking out loud.
-- First line must be exactly: # 🏝️ Grand Island, NY — Community Events Digest
+- First line must be exactly: # 🏝️ Grand Island, NY Community Events Digest
 - Second line must be blank
-- Third section is a summary list — one line per event, format: `- Event Name · Date` (e.g. `- Memorial Day Ceremony · Mon, May 25`). No numbering, no emoji, no extra detail. Include every event that appears below.
+- Third line must be exactly: **Upcoming Events**
+- Fourth section is a summary — one line per event, NO bullet points, NO indentation, NO dashes, format: `**Event Name** · Date` (e.g. `**Memorial Day Ceremony** · Mon, May 25`). List in strict chronological order by date. No numbering, no emoji, no extra detail. Include every event that appears below.
 - After the summary, add a horizontal rule: ---
 - Then list events grouped by week. Each week heading must start with 📅, e.g.: ## 📅 Week 1: May 24 – May 30
 - STRICT DATE RULE: today is {today}. Any event whose date is before today must be completely excluded — do not mention it at all, not even as "just passed"
