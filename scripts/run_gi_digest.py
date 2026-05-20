@@ -33,7 +33,7 @@ def build_html(digest: str, date_str: str) -> str:
         <style>
           h1 {{ font-family:sans-serif; font-size:22px; font-weight:700; color:{BLUE}; margin:0 0 4px; }}
           h2 {{ font-family:sans-serif; font-size:16px; font-weight:700; color:#2d3748; margin:24px 0 8px; border-bottom:1px solid #e2e8f0; padding-bottom:6px; }}
-          h3 {{ font-family:sans-serif; font-size:14px; font-weight:700; color:#2d3748; margin:16px 0 4px; }}
+          h3 {{ font-family:sans-serif; font-size:17px; font-weight:700; color:{BLUE}; margin:20px 0 10px; letter-spacing:0.01em; }}
           p  {{ font-family:sans-serif; font-size:14px; color:#4a5568; line-height:1.8; margin:4px 0 12px; }}
           strong {{ color:#2d3748; }}
         </style>
