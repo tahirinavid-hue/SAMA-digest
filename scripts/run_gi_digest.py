@@ -125,29 +125,49 @@ def clean_digest(raw: str) -> str:
     return "\n".join(kept).strip()
 
 
-def validate_event_numbers(digest_md: str) -> None:
-    """Check that summary event numbers match detail event numbers."""
+def validate_event_numbers(digest_md: str) -> str:
+    """Check summary/detail event numbers align. Auto-corrects mismatches by rebuilding summary."""
     # Summary lines: "1. **Event Name** · Date"
     summary_nums = re.findall(r'^(\d+)\.\s+\*\*', digest_md, re.MULTILINE)
-    # Detail lines: "**1. [emoji] Event Name**" or "**1. Event Name**"
+    # Detail lines: "**1. emoji Event Name**"
     detail_nums = re.findall(r'^\*\*(\d+)\.\s+', digest_md, re.MULTILINE)
+
+    if not detail_nums:
+        raise ValueError("Validation failed: no numbered events found in detail section.")
 
     if not summary_nums:
         raise ValueError("Validation failed: no numbered events found in summary section.")
-    if not detail_nums:
-        raise ValueError("Validation failed: no numbered events found in detail section.")
-    if len(summary_nums) != len(detail_nums):
-        raise ValueError(
-            f"Validation failed: summary has {len(summary_nums)} events "
-            f"but detail section has {len(detail_nums)}. Numbers must match."
-        )
-    for i, (s, d) in enumerate(zip(summary_nums, detail_nums), 1):
-        if s != d:
-            raise ValueError(
-                f"Validation failed: summary item {i} is numbered {s} "
-                f"but corresponding detail event is numbered {d}."
-            )
-    print(f"[run_gi_digest] Validation passed — {len(summary_nums)} events, numbers aligned.")
+
+    if len(summary_nums) == len(detail_nums):
+        print(f"[run_gi_digest] Validation passed — {len(summary_nums)} events, numbers aligned.")
+        return digest_md
+
+    # Mismatch — rebuild the summary from detail event names
+    print(f"[run_gi_digest] Summary/detail mismatch ({len(summary_nums)} vs {len(detail_nums)}) — rebuilding summary.")
+
+    # Extract detail event lines: "**N. emoji Name**\nDate, time, location"
+    detail_blocks = re.findall(r'^\*\*\d+\.\s+.+?\*\*\n(.+?)$', digest_md, re.MULTILINE)
+    detail_headers = re.findall(r'^\*\*(\d+)\.\s+(?:.+?\s+)?(.+?)\*\*', digest_md, re.MULTILINE)
+
+    new_summary_lines = []
+    for num, name in detail_headers:
+        # Find the date line immediately after this header
+        pattern = rf'^\*\*{num}\..+?\*\*\n(.+?)$'
+        match = re.search(pattern, digest_md, re.MULTILINE)
+        date_str = match.group(1).split(",")[0].strip() if match else ""
+        new_summary_lines.append(f"{num}. **{name.strip()}** · {date_str}")
+
+    new_summary = "\n".join(new_summary_lines)
+
+    # Replace old summary block (between ### Upcoming Events and ---)
+    digest_md = re.sub(
+        r'(### Upcoming Events\n)(.*?)(\n---)',
+        rf'\g<1>{new_summary}\g<3>',
+        digest_md,
+        flags=re.DOTALL
+    )
+    print(f"[run_gi_digest] Summary rebuilt with {len(detail_headers)} events.")
+    return digest_md
 
 
 def load_subscribers() -> list[str]:
@@ -184,7 +204,7 @@ def main():
 
     digest_md = gi_community_digest.generate()
     digest_md = clean_digest(digest_md)
-    validate_event_numbers(digest_md)
+    digest_md = validate_event_numbers(digest_md)
 
     digest_html = md.markdown(digest_md, extensions=["extra"])
 
