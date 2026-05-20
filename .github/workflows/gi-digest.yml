@@ -2,7 +2,7 @@ name: GI Community Digest
 
 on:
   schedule:
-    - cron: "0 12 * * 1"  # Mondays at 12pm UTC (8am ET)
+    - cron: "0 12 * * 6"  # Saturdays at 12pm UTC (8am ET)
   workflow_dispatch:
 
 permissions:

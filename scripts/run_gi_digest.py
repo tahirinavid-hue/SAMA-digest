@@ -78,11 +78,11 @@ def load_subscribers() -> list[str]:
 
 def main():
     now = datetime.now(timezone.utc)
-    is_monday = now.weekday() == 0
+    is_saturday = now.weekday() == 5
     force_send = os.environ.get("FORCE_SEND", "").lower() == "true"
 
-    if not is_monday and not force_send:
-        print("[run_gi_digest] Not Monday — nothing to send.")
+    if not is_saturday and not force_send:
+        print("[run_gi_digest] Not Saturday — nothing to send.")
         return
 
     subscribers = load_subscribers()

@@ -95,7 +95,7 @@ def build_welcome_email(first_name: str = "") -> str:
           </div>
 
           <p style="font-family:sans-serif;font-size:15px;color:#4a5568;line-height:1.8;margin:0 0 28px;">
-            Your first digest will arrive this coming <strong>Monday morning</strong>.
+            Your first digest will arrive this coming <strong>Saturday morning</strong>.
             In the meantime, know of an event the community should hear about?
           </p>
 
@@ -112,7 +112,7 @@ def build_welcome_email(first_name: str = "") -> str:
 
           <p style="font-family:sans-serif;font-size:14px;color:#718096;line-height:1.7;
                     margin:0;border-top:1px solid #e2e8f0;padding-top:20px;">
-            Glad to have you. See you Monday! 🌟
+            Glad to have you. See you Saturday! 🌟
           </p>
         </div>
 
