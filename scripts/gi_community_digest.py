@@ -16,18 +16,28 @@ TOOLS = [
     }
 ]
 
-PROMPT = """Search for upcoming events on Grand Island, NY in the next 2 weeks using: grandislandny.gov, isledegrande.com, wnypapers.com, gicf.org, gineighbors.org, gichamber.org, volunteerwny.org, stepoutbuffalo.com
+from datetime import datetime, timezone as _tz
+def _build_prompt() -> str:
+    today = datetime.now(_tz.utc).strftime("%B %d, %Y")
+    return f"""Today's date is {today}. Search for upcoming events on Grand Island, NY in the next 2 weeks using: grandislandny.gov, isledegrande.com, wnypapers.com, gicf.org, gineighbors.org, gichamber.org, volunteerwny.org, stepoutbuffalo.com
 
 Output rules — strictly follow every one:
 - Begin your response with NOTHING except the header line below. No preamble, no "here is", no "let me", no thinking out loud.
 - First line must be exactly: # 🏝️ Grand Island, NY — Community Events Digest
-- Second line must be exactly the date range, e.g.: May 20 – June 2, 2026
-- Then list events grouped by week as clean markdown
-- Only include events with confirmed upcoming dates — no past events
-- For each event: event name as a bold heading, then date/time/location, then a 1-2 sentence plain description in neutral human language
-- Write like a local newsletter editor, not an AI — no em-dashes (—), no phrases like "join us", "don't miss", "be sure to", no bullet points starting with verbs like "Enjoy" or "Discover"
-- Do NOT mention sources, disclaimers, footnotes, warnings about unavailable sites, or closing remarks
+- Second line must be exactly the date range, e.g.: May 24 – June 7, 2026
+- Then list events grouped by week. Each week heading must start with 📅, e.g.: ## 📅 Week 1: May 24 – May 30
+- STRICT DATE RULE: today is {today}. Any event whose date is before today must be completely excluded — do not mention it at all, not even as "just passed"
+- Number each event sequentially across the whole digest: 1, 2, 3, etc.
+- For each event use this format:
+  **N. [single relevant emoji] Event Name**
+  Date, time if known, location
+  1-2 sentence plain description in your own words
+- Choose the emoji based on event type: 🎵 music, 🎨 arts, 🏃 sports/fitness, 🌿 outdoors/nature, 🍽️ food/dining, 👨‍👩‍👧 family, 🏛️ civic/government, 🙌 volunteer/charity, 🎉 festival/celebration, 📚 education/library
+- Write like a local newsletter editor, not an AI — no em-dashes, no "join us", "don't miss", "be sure to"
+- Do NOT mention sources, disclaimers, footnotes, warnings, or closing remarks
 - Do NOT copy any description verbatim — always reword in plain conversational English"""
+
+PROMPT = _build_prompt()
 
 MAX_CONTINUATIONS = 2
 
@@ -35,7 +45,7 @@ MAX_CONTINUATIONS = 2
 def generate() -> str:
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
-    messages = [{"role": "user", "content": PROMPT}]
+    messages = [{"role": "user", "content": _build_prompt()}]
     continuations = 0
 
     all_text = []
