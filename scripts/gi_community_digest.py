@@ -21,6 +21,10 @@ def _build_prompt() -> str:
     today = datetime.now(_tz.utc).strftime("%B %d, %Y")
     return f"""Today's date is {today}. Search for upcoming events on Grand Island, NY in the next 2 weeks using: grandislandny.gov, isledegrande.com, wnypapers.com, gicf.org, gineighbors.org, gichamber.org, volunteerwny.org, stepoutbuffalo.com
 
+Make sure to actively look for:
+- Family-friendly events and kids activities (sports leagues, story times, school events, youth programs, parks & rec, summer camps, playgrounds, arts & crafts for kids)
+- Search specifically for "Grand Island kids", "Grand Island children", "Grand Island family", "Grand Island youth", "Grand Island parks and recreation"
+
 Output rules — strictly follow every one:
 - Begin your response with NOTHING except the header line below. No preamble, no "here is", no "let me", no thinking out loud.
 - First line must be exactly: # 🏝️ Grand Island, NY Community Events Digest
@@ -35,7 +39,7 @@ Output rules — strictly follow every one:
   **N. [single relevant emoji] Event Name**
   Date, time if known, location
   1-2 sentence plain description in your own words
-- Choose the emoji based on event type: 🎵 music, 🎨 arts, 🏃 sports/fitness, 🌿 outdoors/nature, 🍽️ food/dining, 👨‍👩‍👧 family, 🏛️ civic/government, 🙌 volunteer/charity, 🎉 festival/celebration, 📚 education/library
+- Choose the emoji based on event type: 🎵 music, 🎨 arts, 🏃 sports/fitness, 🌿 outdoors/nature, 🍽️ food/dining, 👨‍👩‍👧 family/kids, 🏛️ civic/government, 🙌 volunteer/charity, 🎉 festival/celebration, 📚 education/library
 - Write like a local newsletter editor, not an AI — no em-dashes, no "join us", "don't miss", "be sure to"
 - Do NOT mention sources, disclaimers, footnotes, warnings, or closing remarks
 - Do NOT copy any description verbatim — always reword in plain conversational English"""

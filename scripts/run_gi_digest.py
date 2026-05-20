@@ -17,6 +17,7 @@ from scripts.send_gi_email import send
 
 BLUE = "#1a3a5c"
 LIGHT = "#e8f0f7"
+ACCENT = "#2c7be5"
 ADMIN_EMAIL = "tahirinavid@gmail.com"
 
 ROOT = Path(__file__).parent.parent
@@ -29,15 +30,38 @@ UNSUBSCRIBE_URL = "https://form.jotform.com/261395766068167"
 
 def build_html(digest: str, date_str: str) -> str:
     return f"""
-    <html><body style="background:#f4f6f8;padding:24px;">
-      <div style="max-width:680px;margin:0 auto;background:#fff;border-radius:10px;
-                  border-top:5px solid {BLUE};padding:32px;">
+    <html><body style="background:#eef2f7;padding:24px;margin:0;">
+      <div style="max-width:660px;margin:0 auto;">
+
+        <!-- Header bar -->
+        <div style="background:{BLUE};border-radius:10px 10px 0 0;padding:28px 32px 24px;">
+          <div style="font-family:sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,0.55);
+                      letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;">
+            Grand Island, NY
+          </div>
+          <div style="font-family:sans-serif;font-size:22px;font-weight:700;color:#ffffff;
+                      line-height:1.2;">
+            🏝️ Community Events Digest
+          </div>
+          <div style="font-family:sans-serif;font-size:12px;color:rgba(255,255,255,0.6);
+                      margin-top:6px;">{date_str}</div>
+        </div>
+
+        <!-- Body -->
+        <div style="background:#ffffff;border-radius:0 0 10px 10px;padding:32px;
+                    border:1px solid #dde3ed;border-top:none;">
         <style>
-          h1 {{ font-family:sans-serif; font-size:22px; font-weight:700; color:{BLUE}; margin:0 0 4px; }}
-          h2 {{ font-family:sans-serif; font-size:16px; font-weight:700; color:#2d3748; margin:24px 0 8px; border-bottom:1px solid #e2e8f0; padding-bottom:6px; }}
-          h3 {{ font-family:sans-serif; font-size:17px; font-weight:700; color:{BLUE}; margin:20px 0 10px; letter-spacing:0.01em; }}
+          h1 {{ display:none; }}
+          h2 {{ font-family:sans-serif; font-size:13px; font-weight:700; color:{ACCENT};
+                text-transform:uppercase; letter-spacing:0.1em; margin:28px 0 12px;
+                padding-bottom:6px; border-bottom:2px solid {LIGHT}; }}
+          h3 {{ font-family:sans-serif; font-size:17px; font-weight:700; color:{BLUE};
+                margin:0 0 14px; letter-spacing:0.01em; }}
           p  {{ font-family:sans-serif; font-size:14px; color:#4a5568; line-height:1.8; margin:4px 0 12px; }}
-          strong {{ color:#2d3748; }}
+          strong {{ color:#1a202c; }}
+          ol  {{ padding-left:20px; margin:0 0 20px; }}
+          ol li {{ font-family:sans-serif; font-size:14px; color:#2d3748; line-height:1.9; padding:2px 0; }}
+          hr  {{ border:none; border-top:1px solid #e2e8f0; margin:24px 0; }}
         </style>
         <div style="font-family:sans-serif;font-size:14px;color:#2d3748;line-height:1.8;">
           {digest}
@@ -65,7 +89,8 @@ def build_html(digest: str, date_str: str) -> str:
           Grand Island, NY ·
           <a href="{UNSUBSCRIBE_URL}" style="color:#a0aec0;">Unsubscribe</a>
         </p>
-      </div>
+        </div><!-- /body -->
+      </div><!-- /outer -->
     </body></html>
     """
 
