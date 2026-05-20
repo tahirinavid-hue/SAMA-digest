@@ -1,0 +1,5 @@
+# Grand Island Community Digest — subscriber list
+# Managed automatically by sync_gi_subscribers.py
+# To manually add/remove, edit this file directly.
+
+tahirinavid@gmail.com
