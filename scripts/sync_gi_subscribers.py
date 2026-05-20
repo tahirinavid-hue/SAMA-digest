@@ -20,7 +20,6 @@ UNSUBSCRIBE_FORM_ID = "261395766068167"
 ROOT = Path(__file__).parent.parent
 SUBSCRIBERS_FILE = ROOT / "gi_subscribers.txt"
 WELCOMED_FILE = ROOT / "gi_welcomed.txt"
-LAST_DIGEST_FILE = ROOT / "gi_last_digest.html"
 
 BLUE = "#1a3a5c"
 LIGHT_BLUE = "#e8f0f7"
@@ -187,8 +186,6 @@ def sync() -> None:
         if email not in already_welcomed and email not in unsubscribers
     }
 
-    last_digest_html = LAST_DIGEST_FILE.read_text() if LAST_DIGEST_FILE.exists() else None
-
     welcomed_new = set()
     for email, first_name in to_welcome.items():
         try:
@@ -198,14 +195,6 @@ def sync() -> None:
             print(f"[sync] Welcomed: {email}")
         except Exception as e:
             print(f"[sync] Failed to welcome {email}: {e}")
-            continue
-
-        if last_digest_html:
-            try:
-                send("Grand Island Community Digest — Latest Edition", last_digest_html, [email])
-                print(f"[sync] Sent last digest to: {email}")
-            except Exception as e:
-                print(f"[sync] Failed to send last digest to {email}: {e}")
 
     # Persist
     save_subscribers(updated)
