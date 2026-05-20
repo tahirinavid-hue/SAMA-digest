@@ -27,7 +27,7 @@ LIGHT_BLUE = "#e8f0f7"
 ACCENT = "#2c7be5"
 
 
-def build_welcome_email(first_name: str) -> str:
+def build_welcome_email(first_name: str = "") -> str:
     name_display = first_name.strip().title() if first_name.strip() else "neighbor"
     return f"""
     <html><body style="background:#f4f6f8;padding:24px;margin:0;">
@@ -179,9 +179,8 @@ def sync() -> None:
     new_subscribers: dict[str, str] = {}  # email -> first_name
     for sub in get_subscribe_submissions(agent):
         email = extract_field(sub, "email").strip().lower()
-        first_name = extract_field(sub, "firstName").strip()
         if email:
-            new_subscribers[email] = first_name
+            new_subscribers[email] = ""
 
     # Collect unsubscribe submissions
     unsubscribers: set[str] = set()
