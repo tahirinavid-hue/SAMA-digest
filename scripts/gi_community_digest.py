@@ -5,6 +5,7 @@ Uses Claude claude-sonnet-4-6 with web_search tool (server-side, agentic loop).
 import os
 import time
 import anthropic
+from datetime import datetime, timezone as _tz, timedelta
 
 MODEL = "claude-sonnet-4-6"
 
@@ -12,35 +13,71 @@ TOOLS = [
     {
         "type": "web_search_20250305",
         "name": "web_search",
-        "max_uses": 8,
+        "max_uses": 12,
     }
 ]
 
-from datetime import datetime, timezone as _tz
+
+def _get_weeks() -> list[tuple[str, str]]:
+    """Return two calendar week ranges (Mon–Sun) starting from today."""
+    today = datetime.now(_tz.utc).date()
+    # Start of this week (Monday)
+    monday = today - timedelta(days=today.weekday())
+    weeks = []
+    for i in range(2):
+        start = monday + timedelta(weeks=i)
+        end = start + timedelta(days=6)
+        weeks.append((start.strftime("%b %d"), end.strftime("%b %d")))
+    return weeks
+
+
 def _build_prompt() -> str:
-    today = datetime.now(_tz.utc).strftime("%B %d, %Y")
-    return f"""Today's date is {today}. Search for upcoming events on Grand Island, NY in the next 2 weeks using: grandislandny.gov, isledegrande.com, wnypapers.com, gicf.org, gineighbors.org, gichamber.org, volunteerwny.org, stepoutbuffalo.com
+    today = datetime.now(_tz.utc)
+    today_str = today.strftime("%B %d, %Y")
+    today_date = today.date()
+    weeks = _get_weeks()
+    week1_start, week1_end = weeks[0]
+    week2_start, week2_end = weeks[1]
 
-Output rules — strictly follow every one:
-- Begin your response with NOTHING except the header line below. No preamble, no "here is", no "let me", no thinking out loud.
-- First line must be exactly: # 🏝️ Grand Island, NY Community Events Digest
-- Second line must be blank
-- Third line must be exactly: ### Upcoming Events
-- Fourth section is a summary — one line per event, NO bullet points, NO indentation, NO dashes, format: `N. **Event Name** · Date` (e.g. `1. **Memorial Day Ceremony** · Mon, May 25`). List in strict chronological order by date. No emoji, no extra detail. Include every event that appears below, numbered sequentially starting at 1. The numbers here must match the numbers used on each event in the weekly detail section below.
-- After the summary, add a horizontal rule: ---
-- Then list events grouped by week. Each week heading must start with 📅, e.g.: ## 📅 Week 1: May 24 – May 30
-- STRICT DATE RULE: today is {today}. Any event whose date is before today must be completely excluded — do not mention it at all, not even as "just passed"
-- Number each event sequentially across the whole digest: 1, 2, 3, etc.
-- For each event use this format:
-  **N. [single relevant emoji] Event Name**
-  Date, time if known, location
-  1-2 sentence plain description in your own words
-- Choose the emoji based on event type: 🎵 music, 🎨 arts, 🏃 sports/fitness, 🌿 outdoors/nature, 🍽️ food/dining, 👨‍👩‍👧 family, 🏛️ civic/government, 🙌 volunteer/charity, 🎉 festival/celebration, 📚 education/library
-- Write like a local newsletter editor, not an AI — no em-dashes, no "join us", "don't miss", "be sure to"
-- Do NOT mention sources, disclaimers, footnotes, warnings, or closing remarks
-- Do NOT copy any description verbatim — always reword in plain conversational English"""
+    return f"""Today's date is {today_str}. Search for upcoming events on Grand Island, NY in the next 2 weeks using: grandislandny.gov, isledegrande.com, wnypapers.com, gicf.org, gineighbors.org, gichamber.org, volunteerwny.org, stepoutbuffalo.com, ecdparks.org
 
-PROMPT = _build_prompt()
+Search priority — run these searches in this order:
+1. General upcoming events on Grand Island NY
+2. "Grand Island NY kids" OR "Grand Island NY children" OR "Grand Island NY family events"
+3. "Grand Island NY parks and recreation" OR "Grand Island NY youth sports"
+4. Grand Island Memorial Library upcoming programs
+5. Beaver Island State Park OR Buckhorn Island State Park upcoming events programs ecdparks.org
+6. Grand Island school events or PTA events
+
+Make sure at least 2-3 family/kids events appear in the final digest if any exist.
+
+STRICT EXCLUSION RULES — exclude any event that:
+- Has a date before today ({today_str}) — no past events, not even "just passed"
+- Has no confirmed specific date (no "Date TBD", "TBA", "check website", "ongoing", "season-long")
+- Is a general facility announcement (e.g. "park is open for the season") not a specific event
+
+Output format — follow exactly:
+- Begin with NOTHING except the header. No preamble, no thinking out loud, no intro sentences.
+- Line 1: # Grand Island, NY
+- Line 2: *[A short, original, family-friendly joke. Different every time. Not "Why did the chicken..."]*
+- Line 3: blank
+- Line 4: ### Upcoming Events
+- Then a summary — one line per event, no bullets, no dashes, format: `N. **Event Name** · Day, Mon DD`
+  List in strict chronological order. Number sequentially from 1.
+- Then a horizontal rule: ---
+- Then events grouped into exactly these two weeks:
+  ## 📅 Week 1: {week1_start} – {week1_end}
+  ## 📅 Week 2: {week2_start} – {week2_end}
+  Place each event in the correct week based on its date. If an event falls outside both weeks, exclude it.
+- For each event:
+  **N. [emoji] Event Name**
+  Day, Month DD · Time (if known) · Location
+  1-2 sentence description in plain conversational English, reworded in your own words
+- Emoji guide: 🎵 music, 🎨 arts, 🏃 sports/fitness, 🌿 outdoors/nature, 🍽️ food/dining, 👨‍👩‍👧 family/kids, 🏛️ civic/government, 🙌 volunteer/charity, 🎉 festival/celebration, 📚 education/library
+- Write like a local newsletter editor — no em-dashes, no "join us", "don't miss", "be sure to"
+- Do NOT mention sources, disclaimers, footnotes, or closing remarks
+- Do NOT copy descriptions verbatim — always reword in plain English"""
+
 
 MAX_CONTINUATIONS = 2
 
