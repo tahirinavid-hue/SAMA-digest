@@ -2,6 +2,9 @@
 # Managed automatically by sync_gi_subscribers.py
 # To manually add/remove, edit this file directly.
 
+cassandraalehman@gmail.com
 faisal_tahiri@hotmail.com
 haneyayunus@gmail.com
+random1@gmail.com
+smdcoaches@gmail.com
 tahirinavid@gmail.com
