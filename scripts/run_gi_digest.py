@@ -98,6 +98,10 @@ def build_html(digest: str, date_str: str) -> str:
 
 DIGEST_HEADER = "# Grand Island, NY"
 
+# Phrases that indicate a non-specific or invalid event date
+TBD_PHRASES = ["tbd", "tba", "date tbd", "date tba", "check website", "to be announced",
+               "ongoing", "season-long", "year-round", "open for the season", "late may", "early june"]
+
 
 def clean_digest(raw: str) -> str:
     """Strip AI preamble before the digest header and remove any date range line after it."""
@@ -124,6 +128,24 @@ def clean_digest(raw: str) -> str:
             continue
         kept.append(line)
     return "\n".join(kept).strip()
+
+
+def sanitize_digest(digest_md: str) -> str:
+    """Remove event blocks that have TBD dates or are flagged as ongoing/season-long."""
+    # Split into event blocks by bold event headers: **N. emoji Name**
+    blocks = re.split(r'(?=^\*\*\d+\.)', digest_md, flags=re.MULTILINE)
+    clean_blocks = []
+    removed = 0
+    for block in blocks:
+        lower = block.lower()
+        if any(phrase in lower for phrase in TBD_PHRASES):
+            print(f"[run_gi_digest] Removed TBD/ongoing event block: {block[:60].strip()}")
+            removed += 1
+        else:
+            clean_blocks.append(block)
+    if removed:
+        print(f"[run_gi_digest] Sanitized {removed} invalid event(s).")
+    return "".join(clean_blocks)
 
 
 def validate_event_numbers(digest_md: str) -> str:
@@ -205,6 +227,7 @@ def main():
 
     digest_md = gi_community_digest.generate()
     digest_md = clean_digest(digest_md)
+    digest_md = sanitize_digest(digest_md)
     digest_md = validate_event_numbers(digest_md)
 
     digest_html = md.markdown(digest_md, extensions=["extra"])

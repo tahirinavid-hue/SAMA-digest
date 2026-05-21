@@ -34,6 +34,7 @@ jobs:
         env:
           JOTFORM_API_KEY: ${{ secrets.JOTFORM_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TEST_MODE: ${{ inputs.test_mode && 'true' || 'false' }}
         run: python scripts/sync_gi_subscribers.py
 
       - name: Persist subscriber state

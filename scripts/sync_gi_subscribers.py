@@ -186,15 +186,20 @@ def sync() -> None:
         if email not in already_welcomed and email not in unsubscribers
     }
 
+    test_mode = os.environ.get("TEST_MODE", "").lower() == "true"
+
     welcomed_new = set()
-    for email, first_name in to_welcome.items():
-        try:
-            html = build_welcome_email(first_name)
-            send("Welcome to the Grand Island Community Digest 🎉", html, [email])
-            welcomed_new.add(email)
-            print(f"[sync] Welcomed: {email}")
-        except Exception as e:
-            print(f"[sync] Failed to welcome {email}: {e}")
+    if test_mode:
+        print(f"[sync] TEST MODE — skipping welcome emails for {len(to_welcome)} new subscriber(s).")
+    else:
+        for email, first_name in to_welcome.items():
+            try:
+                html = build_welcome_email(first_name)
+                send("Welcome to the Grand Island Community Digest 🎉", html, [email])
+                welcomed_new.add(email)
+                print(f"[sync] Welcomed: {email}")
+            except Exception as e:
+                print(f"[sync] Failed to welcome {email}: {e}")
 
     # Persist
     save_subscribers(updated)
