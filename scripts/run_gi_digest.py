@@ -34,8 +34,13 @@ def build_html(digest: str, date_str: str) -> str:
     <html><body style="background:#eef2f7;padding:24px;margin:0;">
       <div style="max-width:660px;margin:0 auto;">
 
+        <!-- Hero image -->
+        <img src="https://raw.githubusercontent.com/tahirinavid-hue/SAMA-digest/master/HeaderImage.png"
+             alt="Grand Island Community Digest"
+             style="width:100%;border-radius:10px 10px 0 0;display:block;" />
+
         <!-- Header bar -->
-        <div style="background:{BLUE};border-radius:10px 10px 0 0;padding:28px 32px 24px;">
+        <div style="background:{BLUE};border-radius:0;padding:28px 32px 24px;">
           <div style="font-family:sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,0.55);
                       letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;">
             Grand Island, NY
