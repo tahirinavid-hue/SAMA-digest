@@ -7,6 +7,7 @@ import os
 import re
 import sys
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from pathlib import Path
 import markdown as md
 
@@ -222,7 +223,7 @@ def load_subscribers() -> list[str]:
 
 
 def main():
-    now = datetime.now(timezone.utc)
+    now = datetime.now(ZoneInfo("America/New_York"))
     is_saturday = now.weekday() == 5
     force_send = os.environ.get("FORCE_SEND", "").lower() == "true"
     test_mode = os.environ.get("TEST_MODE", "").lower() == "true"
