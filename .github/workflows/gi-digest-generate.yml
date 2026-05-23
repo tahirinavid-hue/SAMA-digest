@@ -1,12 +1,12 @@
-name: GI Community Digest
+name: GI Digest — Generate Preview
 
 on:
   schedule:
-    - cron: "0 12 * * 6"  # Saturdays at 12pm UTC (8am ET)
+    - cron: "0 11 * * 6"  # Saturdays at 11am UTC (7am ET)
   workflow_dispatch:
     inputs:
       test_mode:
-        description: "Test mode — send to admin only (tahirinavid@gmail.com)"
+        description: "Test mode — welcome emails skipped"
         type: boolean
         default: false
 
@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 jobs:
-  digest:
+  generate:
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     steps:
@@ -45,10 +45,18 @@ jobs:
           git diff --cached --quiet || git commit -m "chore: update subscriber state [skip ci]"
           git push
 
-      - name: Run GI community digest
+      - name: Generate digest & send preview to admin
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          FORCE_SEND: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
-          TEST_MODE: ${{ inputs.test_mode && 'true' || 'false' }}
+          FORCE_SEND: "true"
+          PREVIEW_ONLY: "true"
         run: python scripts/run_gi_digest.py
+
+      - name: Save digest draft to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add gi_last_digest.html 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore: save digest draft for review [skip ci]"
+          git push

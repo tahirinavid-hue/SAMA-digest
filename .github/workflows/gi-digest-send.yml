@@ -1,0 +1,35 @@
+name: GI Digest — Send to Subscribers
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: "Test mode — send only to tahirinavid@gmail.com"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  send:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send saved digest to all subscribers
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TEST_MODE: ${{ inputs.test_mode && 'true' || 'false' }}
+        run: python scripts/send_saved_digest.py

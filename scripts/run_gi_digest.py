@@ -206,9 +206,32 @@ def main():
     is_saturday = now.weekday() == 5
     force_send = os.environ.get("FORCE_SEND", "").lower() == "true"
     test_mode = os.environ.get("TEST_MODE", "").lower() == "true"
+    preview_only = os.environ.get("PREVIEW_ONLY", "").lower() == "true"
 
     if not is_saturday and not force_send:
         print("[run_gi_digest] Not Saturday — nothing to send.")
+        return
+
+    date_str = now.strftime("%B %d, %Y").replace(" 0", " ")
+    subject = f"Grand Island Community Digest — {date_str}"
+
+    print(f"[run_gi_digest] {date_str} — generating digest")
+
+    digest_md = gi_community_digest.generate()
+    digest_md = clean_digest(digest_md)
+    digest_md = sanitize_digest(digest_md)
+    digest_md = validate_event_numbers(digest_md)
+
+    digest_html = md.markdown(digest_md, extensions=["extra"])
+    html = build_html(digest_html, date_str)
+
+    LAST_DIGEST_FILE.write_text(html, encoding="utf-8")
+    print(f"[run_gi_digest] Saved last digest to {LAST_DIGEST_FILE.name}")
+
+    if preview_only:
+        preview_subject = f"PREVIEW (pending approval): {subject}"
+        send(preview_subject, html, [ADMIN_EMAIL])
+        print(f"[run_gi_digest] PREVIEW sent to {ADMIN_EMAIL} — awaiting manual approval to send to subscribers.")
         return
 
     if test_mode:
@@ -219,24 +242,6 @@ def main():
         if not subscribers:
             print("[run_gi_digest] No subscribers — nothing to send.")
             return
-
-    date_str = now.strftime("%B %-d, %Y")
-    subject = f"Grand Island Community Digest — {date_str}"
-
-    print(f"[run_gi_digest] Monday {date_str} — running digest for {len(subscribers)} subscribers")
-
-    digest_md = gi_community_digest.generate()
-    digest_md = clean_digest(digest_md)
-    digest_md = sanitize_digest(digest_md)
-    digest_md = validate_event_numbers(digest_md)
-
-    digest_html = md.markdown(digest_md, extensions=["extra"])
-
-    html = build_html(digest_html, date_str)
-
-    # Save for new-subscriber immediate delivery
-    LAST_DIGEST_FILE.write_text(html, encoding="utf-8")
-    print(f"[run_gi_digest] Saved last digest to {LAST_DIGEST_FILE.name}")
 
     send(subject, html, subscribers)
     print("[run_gi_digest] Done.")
