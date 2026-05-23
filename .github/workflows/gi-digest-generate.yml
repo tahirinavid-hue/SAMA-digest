@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: "0 11 * * 6"  # Saturdays at 11am UTC (7am ET)
   workflow_dispatch:
-    inputs:
-      test_mode:
-        description: "Test mode — welcome emails skipped"
-        type: boolean
-        default: false
 
 permissions:
   contents: write
