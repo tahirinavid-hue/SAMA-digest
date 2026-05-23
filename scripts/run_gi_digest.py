@@ -241,6 +241,9 @@ def main():
     digest_html = md.markdown(digest_md, extensions=["extra"])
     html = build_html(digest_html, date_str)
 
+    subscriber_count = len(load_subscribers())
+    html = html.replace("{{SUBSCRIBER_COUNT}}", str(subscriber_count))
+
     LAST_DIGEST_FILE.write_text(html, encoding="utf-8")
     print(f"[run_gi_digest] Saved last digest to {LAST_DIGEST_FILE.name}")
 
