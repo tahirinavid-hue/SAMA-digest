@@ -69,19 +69,24 @@ def build_html(digest: str, date_str: str) -> str:
           {digest}
         </div>
         <!-- Share section -->
-        <div style="background:{LIGHT};border-radius:8px;padding:20px 24px;margin-top:32px;text-align:center;">
-          <p style="font-family:sans-serif;font-size:14px;color:#2d3748;margin:0 0 12px;line-height:1.6;">
-            Know someone who'd like this? Send them the link.
+        <div style="background:{LIGHT};border-radius:8px;padding:20px 24px;margin-top:32px;">
+          <p style="font-family:sans-serif;font-size:13px;font-weight:700;color:{BLUE};
+                    text-transform:uppercase;letter-spacing:0.08em;margin:0 0 6px;">
+            Tell a Friend
+          </p>
+          <p style="font-family:sans-serif;font-size:13px;color:#4a5568;margin:0 0 14px;line-height:1.6;">
+            Tell a friend to subscribe!
           </p>
           <a href="https://subscribe.grandislanddigest.com"
-             style="font-family:sans-serif;font-size:14px;font-weight:600;color:{BLUE};">
-            subscribe.grandislanddigest.com
+             style="display:inline-block;background:{BLUE};color:#ffffff;
+                    font-family:sans-serif;font-size:13px;font-weight:600;
+                    text-decoration:none;padding:10px 22px;border-radius:5px;">
+            subscribe.grandislanddigest.com →
           </a>
         </div>
 
         <!-- Feedback section -->
-        <div style="background:#ffffff;border:1px solid #dde3ed;border-radius:8px;
-                    padding:20px 24px;margin-top:16px;">
+        <div style="background:{LIGHT};border-radius:8px;padding:20px 24px;margin-top:16px;">
           <p style="font-family:sans-serif;font-size:13px;font-weight:700;color:{BLUE};
                     text-transform:uppercase;letter-spacing:0.08em;margin:0 0 6px;">
             Send Feedback
@@ -99,8 +104,7 @@ def build_html(digest: str, date_str: str) -> str:
         </div>
         <p style="font-family:sans-serif;font-size:11px;color:#a0aec0;margin-top:24px;
                   text-align:center;border-top:1px solid #e2e8f0;padding-top:16px;">
-          You're one of <strong style="color:#718096;">{{{{SUBSCRIBER_COUNT}}}}</strong> Grand Islanders reading this. ·
-          <a href="{SUBSCRIBE_URL}" style="color:#a0aec0;">Subscribe a friend</a><br><br>
+          You're one of <strong style="color:#718096;">{{{{SUBSCRIBER_COUNT}}}}</strong> Grand Islanders reading this.<br><br>
           This is an independent community newsletter and is not affiliated with or
           endorsed by the Town of Grand Island or any official government body. ·
           Grand Island, NY ·
