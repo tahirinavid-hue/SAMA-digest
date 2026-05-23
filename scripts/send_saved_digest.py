@@ -38,6 +38,8 @@ def main():
         sys.exit(1)
 
     html = LAST_DIGEST_FILE.read_text(encoding="utf-8")
+    subscriber_count = len(load_subscribers())
+    html = html.replace("{{SUBSCRIBER_COUNT}}", str(subscriber_count))
 
     test_mode = os.environ.get("TEST_MODE", "").lower() == "true"
 
