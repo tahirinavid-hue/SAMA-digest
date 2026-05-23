@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       test_mode:
-        description: "Test mode — send only to tahirinavid@gmail.com"
+        description: "Test mode — send only to tahirinavid@gmail.com and faisal_tahiri@hotmail.com"
         type: boolean
         default: false
 
