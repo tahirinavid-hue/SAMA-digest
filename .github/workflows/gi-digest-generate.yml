@@ -30,18 +30,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Sync subscribers & send welcome emails
+      - name: Sync subscribers
         env:
           JOTFORM_API_KEY: ${{ secrets.JOTFORM_API_KEY }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          TEST_MODE: ${{ inputs.test_mode && 'true' || 'false' }}
         run: python scripts/sync_gi_subscribers.py
 
       - name: Persist subscriber state
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add gi_subscribers.txt gi_welcomed.txt 2>/dev/null || true
+          git add gi_subscribers.txt 2>/dev/null || true
           git diff --cached --quiet || git commit -m "chore: update subscriber state [skip ci]"
           git push
 

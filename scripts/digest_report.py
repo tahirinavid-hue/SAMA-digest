@@ -18,7 +18,6 @@ ROOT = Path(__file__).parent.parent
 STATS_FILE = ROOT / "gi_send_stats.json"
 STATE_FILE = ROOT / "gi_digest_state.json"  # persisted week-over-week
 SUBSCRIBERS_FILE = ROOT / "gi_subscribers.txt"
-WELCOMED_FILE = ROOT / "gi_welcomed.txt"
 
 BLUE = "#1a3a5c"
 LIGHT = "#e8f0f7"
@@ -34,16 +33,6 @@ def load_subscribers() -> list[str]:
         line.strip()
         for line in SUBSCRIBERS_FILE.read_text(encoding="utf-8", errors="ignore").splitlines()
         if line.strip() and not line.startswith("#")
-    ]
-
-
-def load_welcomed() -> list[str]:
-    if not WELCOMED_FILE.exists():
-        return []
-    return [
-        line.strip()
-        for line in WELCOMED_FILE.read_text(encoding="utf-8", errors="ignore").splitlines()
-        if line.strip()
     ]
 
 
@@ -87,7 +76,7 @@ def email_row(email: str, badge_color: str, badge_text: str) -> str:
     </tr>"""
 
 
-def build_report(stats: dict, subscribers: list[str], welcomed: list[str], prev_state: dict) -> str:
+def build_report(stats: dict, subscribers: list[str], prev_state: dict) -> str:
     date_str = stats.get("date", "Unknown")
     sent = stats.get("sent", 0)
     failed = stats.get("failed", [])
@@ -95,10 +84,10 @@ def build_report(stats: dict, subscribers: list[str], welcomed: list[str], prev_
     test_mode = stats.get("test_mode", False)
 
     prev_total = prev_state.get("total_subscribers", 0)
-    prev_welcomed = set(prev_state.get("welcomed", []))
-    current_welcomed = set(welcomed)
+    prev_subscribers = set(prev_state.get("subscribers", []))
+    current_subscribers = set(subscribers)
 
-    new_subs = [e for e in current_welcomed if e not in prev_welcomed]
+    new_subs = [e for e in current_subscribers if e not in prev_subscribers]
     net_change = len(subscribers) - prev_total
     net_label = f"+{net_change}" if net_change >= 0 else str(net_change)
     net_color = GREEN if net_change >= 0 else RED
@@ -212,10 +201,9 @@ def main():
 
     stats = json.loads(STATS_FILE.read_text(encoding="utf-8"))
     subscribers = load_subscribers()
-    welcomed = load_welcomed()
     prev_state = load_state()
 
-    html = build_report(stats, subscribers, welcomed, prev_state)
+    html = build_report(stats, subscribers, prev_state)
 
     date_str = stats.get("date", "Unknown")
     subject = f"📊 Digest Send Report — {date_str}"
@@ -225,7 +213,7 @@ def main():
     # Update persisted state for next week's comparison
     save_state({
         "total_subscribers": len(subscribers),
-        "welcomed": welcomed,
+        "subscribers": subscribers,
         "last_send_date": date_str,
     })
     print("[digest_report] State updated for next week.")
