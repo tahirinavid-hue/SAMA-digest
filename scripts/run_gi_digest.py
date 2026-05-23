@@ -75,7 +75,7 @@ def build_html(digest: str, date_str: str) -> str:
             Tell a Friend
           </p>
           <p style="font-family:sans-serif;font-size:13px;color:#4a5568;margin:0 0 14px;line-height:1.6;">
-            Tell a friend to subscribe!
+            Know someone who should subscribe?
           </p>
           <a href="https://subscribe.grandislanddigest.com"
              style="display:inline-block;background:{BLUE};color:#ffffff;
