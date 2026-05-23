@@ -69,20 +69,17 @@ def build_html(digest: str, date_str: str) -> str:
         </div>
         <!-- Share section -->
         <div style="background:{LIGHT};border-radius:8px;padding:20px 24px;margin-top:32px;text-align:center;">
-          <p style="font-family:sans-serif;font-size:14px;color:#2d3748;margin:0 0 14px;line-height:1.6;">
-            Know someone who'd enjoy this? Forward it or share the link.
+          <p style="font-family:sans-serif;font-size:14px;color:#2d3748;margin:0 0 12px;line-height:1.6;">
+            Know someone who'd like this? Send them the link.
+          </p>
+          <p style="font-family:monospace;font-size:14px;font-weight:600;color:{BLUE};margin:0 0 14px;">
+            subscribe.grandislanddigest.com
           </p>
           <a href="https://wa.me/?text=Check%20out%20the%20Grand%20Island%20Community%20Digest%20%E2%80%94%20a%20free%20weekly%20roundup%20of%20local%20events%3A%20https%3A%2F%2Fsubscribe.grandislanddigest.com"
              style="display:inline-block;background:#25d366;color:#ffffff;
                     font-family:sans-serif;font-size:13px;font-weight:600;
-                    text-decoration:none;padding:10px 20px;border-radius:5px;margin:4px;">
+                    text-decoration:none;padding:10px 20px;border-radius:5px;">
             Share on WhatsApp
-          </a>
-          <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fsubscribe.grandislanddigest.com"
-             style="display:inline-block;background:#1877f2;color:#ffffff;
-                    font-family:sans-serif;font-size:13px;font-weight:600;
-                    text-decoration:none;padding:10px 20px;border-radius:5px;margin:4px;">
-            Share on Facebook
           </a>
         </div>
 
