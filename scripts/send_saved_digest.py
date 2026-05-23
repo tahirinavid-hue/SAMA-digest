@@ -1,10 +1,12 @@
 """
 Grand Island Community Digest — send the saved digest to all subscribers.
 Run this after reviewing the preview email to approve and deliver to everyone.
+Returns delivery stats written to gi_send_stats.json for the report step.
 """
+import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
 from zoneinfo import ZoneInfo
 from pathlib import Path
 
@@ -16,6 +18,7 @@ ADMIN_EMAIL = "tahirinavid@gmail.com"
 TEST_RECIPIENTS = ["tahirinavid@gmail.com", "faisal_tahiri@hotmail.com"]
 ROOT = Path(__file__).parent.parent
 LAST_DIGEST_FILE = ROOT / "gi_last_digest.html"
+STATS_FILE = ROOT / "gi_send_stats.json"
 
 
 def load_subscribers() -> list[str]:
@@ -49,11 +52,39 @@ def main():
         subscribers = load_subscribers()
         if not subscribers:
             print("[send_saved] No subscribers — nothing to send.")
+            STATS_FILE.write_text(json.dumps({"sent": 0, "failed": [], "total": 0, "date": date_str, "test_mode": False}))
             return
 
-    print(f"[send_saved] Sending saved digest to {len(subscribers)} subscriber(s).")
-    send(subject, html, subscribers)
-    print("[send_saved] Done.")
+    # Send individually and track results
+    failed = []
+    succeeded = 0
+    import requests
+    from scripts.send_gi_email import RESEND_API_KEY, SENDER, RESEND_URL
+
+    for email in subscribers:
+        resp = requests.post(
+            RESEND_URL,
+            headers={"Authorization": f"Bearer {RESEND_API_KEY}", "Content-Type": "application/json"},
+            json={"from": SENDER, "to": [email], "subject": subject, "html": html},
+            timeout=15,
+        )
+        if resp.ok:
+            succeeded += 1
+        else:
+            failed.append(email)
+            print(f"[send_saved] Failed to send to {email}: {resp.status_code} {resp.text}")
+
+    print(f"[send_saved] Sent {succeeded}/{len(subscribers)}, {len(failed)} failed.")
+
+    stats = {
+        "date": date_str,
+        "sent": succeeded,
+        "failed": failed,
+        "total": len(subscribers),
+        "test_mode": test_mode,
+    }
+    STATS_FILE.write_text(json.dumps(stats, indent=2))
+    print(f"[send_saved] Stats written to {STATS_FILE.name}")
 
 
 if __name__ == "__main__":

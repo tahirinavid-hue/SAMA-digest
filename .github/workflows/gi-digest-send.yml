@@ -9,7 +9,7 @@ on:
         default: false
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   send:
@@ -28,8 +28,22 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Send saved digest to all subscribers
+      - name: Send saved digest to subscribers
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           TEST_MODE: ${{ inputs.test_mode && 'true' || 'false' }}
         run: python scripts/send_saved_digest.py
+
+      - name: Send analyst report to admin
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TEST_MODE: ${{ inputs.test_mode && 'true' || 'false' }}
+        run: python scripts/digest_report.py
+
+      - name: Persist send state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add gi_send_stats.json gi_digest_state.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore: update digest send state [skip ci]"
+          git push
