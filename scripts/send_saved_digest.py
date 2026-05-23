@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from scripts.send_gi_email import send
 
 ADMIN_EMAIL = "tahirinavid@gmail.com"
+TEST_RECIPIENTS = ["tahirinavid@gmail.com", "faisal_tahiri@hotmail.com"]
 ROOT = Path(__file__).parent.parent
 LAST_DIGEST_FILE = ROOT / "gi_last_digest.html"
 
@@ -41,8 +42,8 @@ def main():
     subject = f"Grand Island Community Digest — {date_str}"
 
     if test_mode:
-        subscribers = [ADMIN_EMAIL]
-        print(f"[send_saved] TEST MODE — sending only to {ADMIN_EMAIL}")
+        subscribers = TEST_RECIPIENTS
+        print(f"[send_saved] TEST MODE — sending to {', '.join(TEST_RECIPIENTS)}")
     else:
         subscribers = load_subscribers()
         if not subscribers:
