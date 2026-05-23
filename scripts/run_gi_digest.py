@@ -133,8 +133,8 @@ def clean_digest(raw: str) -> str:
             "Refusing to send — output may be malformed."
         )
     print(f"[run_gi_digest] Digest starts at line {start + 1} — preamble stripped.")
-    kept = [lines[start]]  # the # 🏝️ header line
-    # Skip any immediately following date-range line (e.g. "May 24 – June 7, 2026")
+    # Skip the "# Grand Island, NY" header line — already shown in the email header bar
+    kept = []
     rest = lines[start + 1:]
     for j, line in enumerate(rest):
         stripped = line.strip()
