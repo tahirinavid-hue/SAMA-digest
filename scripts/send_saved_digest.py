@@ -5,6 +5,7 @@ Run this after reviewing the preview email to approve and deliver to everyone.
 import os
 import sys
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -37,7 +38,7 @@ def main():
 
     test_mode = os.environ.get("TEST_MODE", "").lower() == "true"
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(ZoneInfo("America/New_York"))
     date_str = now.strftime("%B %d, %Y").replace(" 0", " ")
     subject = f"Grand Island Community Digest — {date_str}"
 
