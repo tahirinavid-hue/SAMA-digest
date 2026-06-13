@@ -1,9 +1,7 @@
 {
-  "date": "June 6, 2026",
-  "sent": 18,
-  "failed": [
-    "rubi786@yahoo.com"
-  ],
-  "total": 19,
-  "test_mode": false
+  "date": "June 13, 2026",
+  "sent": 2,
+  "failed": [],
+  "total": 2,
+  "test_mode": true
 }
