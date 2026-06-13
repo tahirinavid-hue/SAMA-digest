@@ -65,10 +65,7 @@ Output format — follow exactly:
 - Then a summary — one line per event, no bullets, no dashes, format: `N. **Event Name** · Day, Mon DD`
   List in strict chronological order. Number sequentially from 1.
 - Then a horizontal rule: ---
-- Then events grouped into exactly these two weeks:
-  ## 📅 Week 1: {week1_start} – {week1_end}
-  ## 📅 Week 2: {week2_start} – {week2_end}
-  Place each event in the correct week based on its date. If an event falls outside both weeks, exclude it.
+- Then all events in a single flat list, in strict chronological order. No week groupings, no section headers.
 - For each event:
   **N. [emoji] Event Name**
   Day, Month DD · Time (if known) · Location
